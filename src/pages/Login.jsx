@@ -31,11 +31,14 @@ const Login = () => {
 
         {/* Submit Button */}
         <button type="submit" className="btn-primary">
-            Login
+          Login
         </button>
       </form>
+      <p className="link-text">
+        Don't have an account?<Link to="/register">Register Here</Link>
+      </p>
     </div>
   );
 };
 
-export default Login
+export default Login;
