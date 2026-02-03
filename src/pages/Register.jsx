@@ -11,7 +11,7 @@ const Register = () => {
     password: "",
   });
   const [errors, setErrors] = useState({});
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   //Logic section
 
@@ -52,15 +52,15 @@ const Register = () => {
     });
     setErrors({
       ...errors,
-      [e.target.name]:""
-    })
+      [e.target.name]: "",
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(validate()){
-      localStorage.setItem('authData',JSON.stringify(formData))
-      alert('Registration Successfully')
-      navigate("/login")
+    if (validate()) {
+      localStorage.setItem("authData", JSON.stringify(formData));
+      alert("Login Successfully...");
+      navigate("/login");
     }
   };
   // useEffect (()=>{
