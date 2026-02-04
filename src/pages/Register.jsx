@@ -44,7 +44,7 @@ const Register = () => {
 
   const handleInputChange = (e) => {
     // console.log(e.target.name,e.target.value);
-    //e.target.name=e.target.value---comment
+    //e.target.name=e.target.value------comment
 
     setFormData({
       ...formData,
@@ -59,7 +59,7 @@ const Register = () => {
     e.preventDefault();
     if (validate()) {
       localStorage.setItem("authData", JSON.stringify(formData));
-      alert("Login Successfully...");
+      alert("Register Successfully...");
       navigate("/login");
     }
   };
