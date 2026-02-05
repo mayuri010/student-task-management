@@ -1,15 +1,16 @@
-export const TaskList = () => {
+export const TaskList = ({tasks}) => {
   return (
     <>
       <div className="task-grid">
         {/* task card1 */}
-        <div className="task-card" style={{ position: "relative" }}>
-          <h3>Complete React Assignment</h3>
-          <p>Finish task manager UI and styling</p>
+        {tasks.map((task)=>(
+          <div className="task-card" style={{ position: "relative" }}>
+          <h3>{task.title}</h3>
+          <p>{task.description}</p>
 
           <div className="task-meta">
-            <span>Due:2026-02-10</span>
-            <span className="priority-badge priority-high">high</span>
+            <span>Due:{task.dueDate}</span>
+            <span className="priority-badge priority-high">{task.priority}</span>
           </div>
 
           <div className="task-actions">
@@ -38,6 +39,9 @@ export const TaskList = () => {
             </button>
           </div>
         </div>
+          
+        ))}
+        
       </div>
     </>
   );
