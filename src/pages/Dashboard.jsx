@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
-
-import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
+import TaskForm from "../components/TaskForm";
 
-export default function Dashboard() {
+function Dashboard() {
   const navigate = useNavigate();
-  const [tasks, setTasks] = useState([]);
   const [editTask, setEditTask] = useState();
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const [showForm, setShowForm] = useState(false);
+  const [tasks, setTasks] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -23,6 +19,15 @@ export default function Dashboard() {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // useEffect(() => {
+  //   console.log(tasks);
+  // }, [tasks]);
+
   const handleAddTask = async (newTask) => {
     const tasktoAdd = { ...newTask, completed: false };
     try {
@@ -38,6 +43,17 @@ export default function Dashboard() {
       console.log(error);
     }
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("lData");
+    localStorage.removeItem("authData");
+    navigate("/login");
+  };
+
+  const editingTask = (editingTask) => {
+    setEditTask(editingTask);
+  };
+
   const handleUpdateTask = async (updatedTask) => {
     try {
       await fetch(`http://localhost:3000/tasks/${updatedTask.id}`, {
@@ -55,17 +71,6 @@ export default function Dashboard() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("lData");
-    localStorage.removeItem("authData");
-    // localStorage.clear()
-    navigate("/login");
-    // console.log('click from dashboard');
-  };
-  const editingTask = (editingTask) => {
-    setEditTask(editingTask);
-  };
-
   const handleDeleteTask = async (id) => {
     try {
       await fetch(`http://localhost:3000/tasks/${id}`, {
@@ -77,20 +82,49 @@ export default function Dashboard() {
     }
   };
 
+  const handleCompleteTask=async(id)=>{
+    const taskToggle=tasks.find((t)=>t.id==id);
+    const updatedTask={...taskToggle,completed:!taskToggle.completed}
+    try{
+      await fetch(`http://localhost:3000/tasks/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedTask),
+      });
+     setTasks(
+        tasks.map((task) =>
+          task.id === id ? updatedTask : task,
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div>
-      <Navbar title="Task Management" onLogout={handleLogout} />
-      <TaskForm
-        addTask={handleAddTask}
-        updateTask={handleUpdateTask}
-        editingTask={editTask}
+      <Navbar
+        title="Task Managment"
+        onLogout={handleLogout}
+        isFormOpen={showForm}
+        onAddTaskBtnClick={() => setShowForm(!showForm)}
       />
-      <h1>My Task </h1>
+      {
+        showForm&&( <TaskForm
+        addTask={handleAddTask}
+        editingTask={editTask}
+        updateTask={handleUpdateTask}
+      />)
+      }
+     
+      <h1>hello</h1>
       <TaskList
         tasks={tasks}
         editingTask={editingTask}
         deletingTask={handleDeleteTask}
+        handleCompleteTask={handleCompleteTask}
       />
     </div>
   );
 }
+
+export default Dashboard;
