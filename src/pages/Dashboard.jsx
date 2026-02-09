@@ -8,6 +8,7 @@ import TaskList from "../components/TaskList";
 export default function Dashboard() {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
+  const [editTask, setEditTask] = useState();
 
   useEffect(() => {
     fetchData();
@@ -37,6 +38,23 @@ export default function Dashboard() {
       console.log(error);
     }
   };
+  const handleUpdateTask = async (updatedTask) => {
+    try {
+      await fetch(`http://localhost:3000/tasks/${updatedTask.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedTask),
+      });
+      setTasks(
+        tasks.map((task) =>
+          task.id === updatedTask.id ? { ...updatedTask } : task,
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("lData");
     localStorage.removeItem("authData");
@@ -44,12 +62,35 @@ export default function Dashboard() {
     navigate("/login");
     // console.log('click from dashboard');
   };
+  const editingTask = (editingTask) => {
+    setEditTask(editingTask);
+  };
+
+  const handleDeleteTask = async (id) => {
+    try {
+      await fetch(`http://localhost:3000/tasks/${id}`, {
+        method: "DELETE",
+      });
+      setTasks(tasks.filter((task) => task.id !== id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <Navbar title="Task Management" onLogout={handleLogout} />
-      <TaskForm addTask={handleAddTask} />
+      <TaskForm
+        addTask={handleAddTask}
+        updateTask={handleUpdateTask}
+        editingTask={editTask}
+      />
       <h1>My Task </h1>
-      <TaskList tasks={tasks} />
+      <TaskList
+        tasks={tasks}
+        editingTask={editingTask}
+        deletingTask={handleDeleteTask}
+      />
     </div>
   );
 }

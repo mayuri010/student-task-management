@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function TaskForm({addTask}) {
+export default function TaskForm({ addTask, updateTask, editingTask }) {
   const [formData, setFormData] = useState({
     title: "",
     desc: "",
@@ -9,6 +9,10 @@ export default function TaskForm({addTask}) {
   });
 
   const [error, setError] = useState({});
+
+  useEffect(() => {
+    setFormData(editingTask);
+  }, [editingTask]);
 
   const handleChange = (e) => {
     setFormData({
@@ -41,11 +45,14 @@ export default function TaskForm({addTask}) {
   const handleAdd = (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log(formData);
-      addTask(formData)
+      if (editingTask) {
+        updateTask(formData);
+      } else {
+        addTask(formData);
+      }
     }
   };
-  
+
   return (
     <>
       <div className="add-task-card">
@@ -57,7 +64,7 @@ export default function TaskForm({addTask}) {
               placeholder="Task Title"
               name="title"
               id="title"
-              value={formData.title}
+              value={formData?.title}
               onChange={handleChange}
             ></input>
             {error.title && <span className="error-msg">{error.title}</span>}
@@ -69,7 +76,7 @@ export default function TaskForm({addTask}) {
               rows="3"
               name="desc"
               id="desc"
-              value={formData.desc}
+              value={formData?.desc}
               onChange={handleChange}
             ></textarea>
             {error.desc && <span className="error-msg">{error.desc}</span>}
@@ -81,7 +88,7 @@ export default function TaskForm({addTask}) {
                 type="date"
                 name="date"
                 id="date"
-                value={formData.date}
+                value={formData?.date}
                 onChange={handleChange}
               />
               {error.date && <span className="error-msg">{error.date}</span>}
@@ -91,7 +98,7 @@ export default function TaskForm({addTask}) {
               <select
                 name="priority"
                 id="priority"
-                value={formData.priority}
+                value={formData?.priority}
                 onChange={handleChange}
               >
                 <option value="Low">Low Priority</option>
@@ -111,7 +118,8 @@ export default function TaskForm({addTask}) {
               style={{ flex: 1 }}
               onClick={handleAdd}
             >
-              Add Task
+              {editingTask ? "Update" : "Add"}
+              Task
             </button>
 
             <button
