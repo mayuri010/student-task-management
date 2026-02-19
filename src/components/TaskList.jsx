@@ -1,6 +1,11 @@
 import React from "react";
 
-export default function TaskList({ tasks, editingTask, deletingTask ,handleCompleteTask}) {
+export default function TaskList({
+  tasks,
+  editingTask,
+  deletingTask,
+  handleCompleteTask,
+}) {
   const handleEditClick = (task) => {
     editingTask(task);
   };
@@ -9,7 +14,6 @@ export default function TaskList({ tasks, editingTask, deletingTask ,handleCompl
     deletingTask(taskId);
   };
 
-  
   return (
     <>
       <div className="task-grid">
@@ -50,7 +54,7 @@ export default function TaskList({ tasks, editingTask, deletingTask ,handleCompl
                   handleCompleteTask(task.id);
                 }}
               >
-                {task.completed ? "undo":"✔️"}
+                {task.completed ? "undo" : "✔️"}
               </button>
               <button
                 className="btn-icon"
